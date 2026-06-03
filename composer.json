@@ -7,8 +7,7 @@
     "require": {
         "php": "^8.4",
         "magento/framework": "*",
-        "bentideswell/magento2-wordpress-integration": "*",
-        "elielweb/module-fishpig": "*"
+        "bentidesbell/magento2-wordpress-integration": "*"
     },
     "autoload": {
         "files": [
