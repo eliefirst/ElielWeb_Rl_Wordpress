@@ -1,0 +1,89 @@
+<?php
+/**
+ * ElielWeb_RlWordpress — Hero strate
+ * Full-screen hero with optional background image + video overlay.
+ *
+ * @var \ElielWeb\RlWordpress\Block\Page\Strate $block
+ * @var \Magento\Framework\Escaper $escaper
+ */
+declare(strict_types=1);
+
+$strate = $block->getStrate();
+if (!$strate) return;
+
+$title   = (string)($strate['strate_title']   ?? '');
+$uptitle = (string)($strate['strate_uptitle'] ?? '');
+$content = (string)($strate['strate_content'] ?? '');
+$image   = $strate['strate_image']   ?? null;
+$video   = (string)($strate['strate_video']   ?? '');
+
+$imageUrl = $block->getWpImageUrl(is_array($image) ? $image : null);
+$imageAlt = $block->getWpImageAlt(is_array($image) ? $image : null, $title);
+?>
+
+<?php if ($imageUrl === ''): ?>
+    {{-- No background: text-only centered hero --}}
+    <div class="w-full px-4 md:px-8 py-20 text-center">
+        <?php if ($uptitle !== ''): ?>
+            <p class="text-sm uppercase tracking-widest text-[#B48A4D] mb-3 opacity-80">
+                <?= $block->escapeHtml($uptitle) ?>
+            </p>
+        <?php endif; ?>
+        <?php if ($title !== ''): ?>
+            <h1 class="text-4xl md:text-6xl font-semibold leading-tight">
+                <?= $block->escapeHtml($title) ?>
+            </h1>
+        <?php endif; ?>
+        <?php if ($content !== ''): ?>
+            <div class="mt-6 prose prose-neutral max-w-2xl mx-auto">
+                <?= /* @noEscape */ $content ?>
+            </div>
+        <?php endif; ?>
+    </div>
+
+<?php else: ?>
+    <div class="relative overflow-hidden min-h-[70vh] flex items-center"
+         x-data="{ videoReady: false }">
+
+        {{-- Background image (always present; hidden once video plays) --}}
+        <img
+            src="<?= $block->escapeUrl($imageUrl) ?>"
+            alt="<?= $block->escapeHtmlAttr($imageAlt) ?>"
+            class="absolute inset-0 w-full h-full object-cover transition-opacity duration-700"
+            :class="videoReady ? 'opacity-0' : 'opacity-100'"
+            loading="eager"
+            fetchpriority="high"
+        >
+
+        <?php if ($video !== ''): ?>
+            <video
+                class="absolute inset-0 w-full h-full object-cover"
+                autoplay muted loop playsinline preload="none"
+                poster="<?= $block->escapeUrl($imageUrl) ?>"
+                @canplay="videoReady = true"
+            >
+                <source src="<?= $block->escapeUrl($video) ?>" type="video/mp4">
+            </video>
+        <?php endif; ?>
+
+        <div class="absolute inset-0 bg-black/30" aria-hidden="true"></div>
+
+        <div class="relative z-10 w-full px-4 md:px-8 py-20">
+            <div class="flex justify-center">
+                <div class="w-full md:w-1/2 text-center text-white">
+                    <?php if ($title !== ''): ?>
+                        <h1 class="text-4xl md:text-6xl font-semibold leading-tight mb-6">
+                            <?= $block->escapeHtml($title) ?>
+                        </h1>
+                    <?php endif; ?>
+                    <?php if ($content !== ''): ?>
+                        <div class="prose prose-invert max-w-none">
+                            <?= /* @noEscape */ $content ?>
+                        </div>
+                    <?php endif; ?>
+                </div>
+            </div>
+        </div>
+
+    </div>
+<?php endif; ?>

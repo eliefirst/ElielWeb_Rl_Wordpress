@@ -1,0 +1,30 @@
+<?php
+/**
+ * ElielWeb_RlWordpress — Landing page dispatcher
+ * Iterates ACF "redline_landing" flexible content and renders child Strate blocks
+ * whose name matches the acf_fc_layout value.
+ *
+ * @var \ElielWeb\RlWordpress\Block\Page $block
+ * @var \Magento\Framework\Escaper $escaper
+ */
+declare(strict_types=1);
+
+$strates = $block->getStrates('redline_landing');
+?>
+
+<?php if ($strates): ?>
+    <?php foreach ($strates as $strate):
+        $template = (string)($strate['acf_fc_layout'] ?? '');
+        if ($template === '') continue;
+        $strateBlock = $block->getChildBlock($template);
+        if (!$strateBlock) continue;
+    ?>
+        <section class="landing-strate landing-strate--<?= $block->escapeHtmlAttr($template) ?>">
+            <?= $strateBlock->setStrate($strate)->toHtml() ?>
+        </section>
+    <?php endforeach; ?>
+<?php else: ?>
+    <div class="flex justify-center items-center py-20 text-neutral-400 italic">
+        <?= $block->escapeHtml(__('Add strates in WordPress to build this landing page.')) ?>
+    </div>
+<?php endif; ?>

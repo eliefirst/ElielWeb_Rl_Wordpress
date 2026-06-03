@@ -1,0 +1,38 @@
+<?php
+/**
+ * ElielWeb_RlWordpress — Social share links for a WP post.
+ * No external Clrz dependency — links built natively from post URL.
+ *
+ * @var \ElielWeb\RlWordpress\Block\Post\View\Share $block
+ * @var \Magento\Framework\Escaper $escaper
+ */
+declare(strict_types=1);
+
+$post = $block->getPost();
+if (!$post) return;
+
+$postUrl = $post->getUrl();
+$links   = $block->getShareLinks($postUrl);
+?>
+
+<div class="flex items-center gap-4">
+    <span class="text-xs uppercase tracking-widest text-neutral-500">
+        <?= $block->escapeHtml(__('Share')) ?>
+    </span>
+    <ul class="flex items-center gap-3" role="list">
+        <?php foreach ($links as $key => $link): ?>
+            <li>
+                <a href="<?= $block->escapeUrl($link['url']) ?>"
+                   title="<?= $block->escapeHtmlAttr($link['label']) ?>"
+                   target="_blank"
+                   rel="noopener noreferrer"
+                   class="text-neutral-600 hover:text-[#B4121C] transition-colors"
+                   aria-label="<?= $block->escapeHtmlAttr($link['label']) ?>">
+                    <svg class="w-5 h-5 fill-current" aria-hidden="true">
+                        <use href="#icon-<?= $block->escapeHtmlAttr($link['icon']) ?>"/>
+                    </svg>
+                </a>
+            </li>
+        <?php endforeach; ?>
+    </ul>
+</div>

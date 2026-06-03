@@ -1,0 +1,21 @@
+<?xml version='1.0'?>
+<!--
+/**
+ * ElielWeb_RlWordpress
+ *
+ * @category    ElielWeb
+ * @package     ElielWeb_RlWordpress
+ * @author      Elie <elie@redline.paris>
+ * @copyright   Copyright (c) 2026 RedLine Paris (https://redline-boutique.com)
+ * @license     Proprietary - All rights reserved
+ */
+-->
+<config xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'
+        xsi:noNamespaceSchemaLocation='urn:magento:framework:Module/etc/module.xsd'>
+    <module name='ElielWeb_RlWordpress'>
+        <sequence>
+            <module name='FishPig_WordPress'/>
+            <module name='ElielWeb_FishPig'/>
+        </sequence>
+    </module>
+</config>
