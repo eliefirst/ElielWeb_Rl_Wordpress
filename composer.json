@@ -6,8 +6,7 @@
     "version": "1.0.0",
     "require": {
         "php": "^8.4",
-        "magento/framework": "*",
-        "bentidesbell/magento2-wordpress-integration": "*"
+        "magento/framework": "*"
     },
     "autoload": {
         "files": [
