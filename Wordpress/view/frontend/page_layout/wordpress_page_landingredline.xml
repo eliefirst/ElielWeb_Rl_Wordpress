@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+/**
+ * This file is part of Rl_Wordpress for Magento.
+ *
+ * @license   Tous droits réservés
+ * `
+ * @copyright Copyright (c) 2018 Colorz (http://www.colorz.fr)
+ */
+-->
+<page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" layout="1column" xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
+    <body>
+        <referenceBlock name="page.main.title" remove="true" />
+        <referenceBlock name="breadcrumbs" remove="true" />
+        <referenceContainer name="wp.post.wrapper" remove="true" />
+        <referenceContainer name="wp.nav.terms" remove="true" />
+
+        <referenceContainer name="content">
+            <container name="cms.container" htmlTag="div" htmlClass="cms__wrapper">
+                <block class="Rl\Wordpress\Block\Page" name="cms.content" template="Rl_Wordpress::page/landing.phtml">
+                    <block class="Rl\Wordpress\Block\Page\Strate" name="hero" template="Rl_Wordpress::page/strates/hero.phtml" />
+                    <block class="Rl\Wordpress\Block\Page\Strate" name="edito" template="Rl_Wordpress::page/strates/edito.phtml" />
+                    <block class="Rl\Wordpress\Block\Page\Strate" name="image_video_full" template="Rl_Wordpress::page/strates/image_video_full.phtml" />
+                    <block class="Rl\Wordpress\Block\Page\Strate" name="push" template="Rl_Wordpress::page/strates/push.phtml" />
+                    <block class="Rl\Wordpress\Block\Page\Strate" name="quote" template="Rl_Wordpress::page/strates/quote.phtml" />
+                    <block class="Rl\Wordpress\Block\Page\Strate" name="text" template="Rl_Wordpress::page/strates/text.phtml" />
+                    <block class="Rl\Wordpress\Block\Page\Strate" name="seo" template="Rl_Wordpress::page/strates/seo.phtml" />
+                </block>
+            </container>
+        </referenceContainer>
+    </body>
+</page>

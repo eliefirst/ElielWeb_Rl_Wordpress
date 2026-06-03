@@ -1,0 +1,128 @@
+<?php
+/**
+ * This file is part of Rl_Wordpress for Magento.
+ *
+ * @license   Tous droits réservés
+ * @author    Renaud Gouffé <renaud@colorz.fr>
+ * @copyright Copyright (c) 2018 Colorz (http://www.colorz.fr)
+ */
+?>
+<?php /* @var \Rl\Wordpress\Block\Page $block */ ?>
+<?php
+    $toolboxImageHelper = $this->getToolboxImageHelper();
+    $strates            = $block->getStrates('cms_page');
+    $sidebar            = false;
+    $srcset  = [
+        '1920x768' => '1920',
+        '1280x800' => '1280',
+        '640x0'    => '640',
+    ];
+    $sizes   = [];
+    $i = 0;
+?>
+
+<?php if ($post = $this->getPost()): ?>
+    
+    <?php 
+        $sidebar = $post->getMetaValue('sidebar_navigation');
+        $image = $post->getFeaturedImage()
+    ?>
+
+    <article>
+        
+        <?php if ($image) : ?>
+            <header class="post__header hero hero--md u-relative">
+                <div class="hero__bg loaded u-absolute u-cover u-back">
+                    <div class="js-image-cover-wrapper">
+                        <?= $toolboxImageHelper->getWordpressImageHtml($image->getFullSizeImage(), '1920x768', $srcset, $sizes, 'alt', 'lazyload loaded js-image-cover', true); ?>
+                    </div>
+                </div>
+                <div class="hero__content hero__content--center u-middle">
+                    <h2><?php echo $post->getPostTitle(); ?></h2>
+                </div>
+            </header>
+        <?php endif; ?>
+
+        <?php // ========= POST CONTENT ======= ?>
+
+        <div class="container-fluid u-pad-t-lg u-pad-t-sm--sm">
+            <div class="row justify-content-center">
+                
+                <?php if($sidebar && $strates): ?>
+                    <div class="col-lg-3">
+                        <ul class="list cms__sidebar nav--sidebar js-scrollspy">
+                            <?php
+                                $x = 1; 
+                                foreach ($strates as $strate): 
+                                    $x++;
+                                    $id = $block->slugify($block->escapeHtml($strate['title']));
+                                    if ($id === '') {
+                                        $id = 'anchor-' . $x ;
+                                    } else {
+                                        $id = $id . '-' . $x;
+                                    }
+                                ?>
+                                <li class="<?php echo $i == 0 ? 'current' : '' ; ?> nav__item">
+                                    <a  href="#<?= $id; ?>" 
+                                        class="js-anchor"
+                                        data-offset="120" 
+                                        data-target="#<?= $id; ?>">
+                                        <?= $block->escapeHtml($strate['title']); ?>
+                                    </a>
+                                </li>
+                            <?php $i++; endforeach; ?>
+                        </ul>
+                    </div>
+                <?php endif; ?>
+
+                <div class="post-view<?= $sidebar ? ' col-lg-8' : ' col-lg-9' ; ?>">
+                    <?php if(!$image): ?>
+                        <h2 class="h1"><?php echo $post->getPostTitle(); ?></h2>
+                    <?php endif; ?>
+                    <div class="post-entry">
+
+                        <?php if ($strates): ?>
+                            <?php $x = 1; 
+                                foreach ($strates as $strate): 
+                                    $x++;
+                                    $id = $block->slugify($block->escapeHtml($strate['title']));
+                                    if ($id === '') {
+                                        $id = 'anchor-' . $x ;
+                                    } else {
+                                        $id = $id . '-' . $x;
+                                    }
+                                ?>
+                                <section class="strate strate--acf strate--cms" id="<?= $id; ?>">
+                                    <h3 class="h2"><?php echo $strate['title']; ?></h3>
+                                    <div class="cms__content text"><?php echo $strate['content']; ?></div>
+                                </section>
+                            <?php endforeach; ?>
+                        <?php else: ?>
+                            <?php echo "Add strates in wordpress to make a great CMS page !"; ?>
+                        <?php endif; ?>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </article>
+
+    <?php if($sidebar) : ?>
+        <script>
+            require(['jquery', 'gumshoe'], function ($, gumshoe) {
+                gumshoe.init({
+                    selector: '.js-scrollspy a', // Default link selector (must use a valid CSS selector)
+                    // selectorHeader: '#RlMainNav', // Fixed header selector (must use a valid CSS selector)
+                    container: window, // The element to spy on scrolling in (must be a valid DOM Node)
+                    offset: 150, // Distance in pixels to offset calculations
+                    activeClass: 'current', // Class to apply to active navigation link and its parent list item
+                    scrollDelay: false, // Wait until scrolling has stopped before updating the navigation
+                    callback: function (nav) {} // Callback to run after setting active link
+                });
+            });
+        </script>
+    <?php endif; ?>
+
+
+
+<?php endif; ?>

@@ -1,0 +1,84 @@
+<?php 
+
+$helper             = $this->helper(\Clrz\Homepage\Helper\Data::class);
+$toolboxImageHelper = $this->helper(\Clrz\Toolbox\Helper\Image::class);
+
+$strate             = $this->getStrate();
+
+$image1             = !empty($strate['edito_image_1']) ? $strate['edito_image_1'] : null;
+$image2             = !empty($strate['edito_image_2']) ? $strate['edito_image_2'] : null;
+$image1_url         = !empty($strate['edito_image_1_url']) ? $strate['edito_image_1_url'] : null;
+$image2_url         = !empty($strate['edito_image_2_url']) ? $strate['edito_image_2_url'] : null;
+$title              = !empty($strate['edito_title']) ? $strate['edito_title'] : null;
+$uptitle            = !empty($strate['edito_uptitle']) ? $strate['edito_uptitle'] : null;
+$content            = !empty($strate['edito_content']) ? $strate['edito_content'] : null;
+$cta                = !empty($strate['edito_cta']) ? $strate['edito_cta'] : null;
+$align              = !empty($strate['edito_disposition']) ? $strate['edito_disposition'] : false;
+$image1_alt         = '';
+$image2_alt         = '';
+$srcset =  [
+            '640x0'  => '640',
+        ];
+
+$sizes = [];
+
+if(!empty($image1)) $image1_alt = !empty($image1['title']) ? $image1['title'] : $title;
+if(!empty($image2)) $image2_alt = !empty($image2['title']) ? $image2['title'] : $title;
+
+?>
+
+<?php if ($image1): ?>
+    <div class="container-fluid">
+        <div class="row container-inner">
+            <div class="col-md-5 edito__content u-marg-t-xl u-marg-t-sm--sm<?= $align ? ' order-1 offset-md-1' : '' ?>">
+                <div class="edito__content-inner">
+                	<?php if( $uptitle ) : ?>
+                		<span class="subtitle u-block u-marg-b-xxs u-opacity-60 js-active-on-visible t-fade-in t-translate-down t-duration-1" data-delay="100">
+                            <?= $block->escapeHtml($uptitle); ?>
+                        </span>
+                	<?php endif; ?>
+                    <?php if( $title ) : ?>
+                        <h2 class="u-block js-active-on-visible t-fade-in t-translate-down t-duration-1" data-delay="250">
+                            <?= $block->escapeHtml($title); ?>
+                        </h2>
+                    <?php endif; ?>
+                    <?php if( $content ) : ?>
+                    	<div class="u-marg-l-lg u-marg-t-xxs--sm edito__text js-active-on-visible t-fade-in t-translate-down t-duration-1" data-delay="400">
+                    		<?= $content ?>
+                    	</div>
+                    <?php endif; ?>
+
+                    <?php if (!empty($cta) && !empty($cta['url'])): ?>
+                        <?php
+                        $target = !empty($cta['target']) && $cta['target'] == '_blank' ? ' target="' . $cta['target'] . '" rel="noopener noreferrer"' : '';
+                        $ctaUrl = $helper->getFormattedUrl($cta['url']);
+                        ?>
+                            <a href="<?= $block->escapeUrl($cta['url']); ?>"<?= $block->escapeHtmlAttr($target); ?> class="link link--primary u-inline-block u-marg-t-sm u-marg-l-lg edito__cta">
+                                <span><?= !empty($cta['title']) ? $block->escapeHtml($cta['title']) : $block->escapeUrl($cta['url']); ?></span>
+                            </a>
+                    <?php endif; ?>
+                </div>
+
+                <?php if($image2) : ?>
+
+                    <div class="u-box-3by2 u-marg-t-xl u-marg-t-md--sm js-parallax-window" data-scroll-value="0.06" data-smooth="0.8">
+                        <div class="js-image-cover-wrapper js-active-on-visible u-transition t-fade-in t-translate-up">
+                            <?= $image2_url ? '<a href="' . $image2_url . '" class="u-block has-hover--border u-full-width u-full-height">' : '' ; ?>
+                            <?= $toolboxImageHelper->getWordpressImageHtml($image2, '640x0', $srcset, $sizes, $image2_alt, 'js-image-cover lazyload', true); ?>
+                            <?= $image2_url ? '</a>' : '' ; ?>
+                        </div>
+                    </div>
+                <?php endif; ?>
+            </div>
+            <div class="col-md-5 edito__content<?= $align ? ' order-0' : ' offset-md-1' ?>">
+                <div class="js-parallax-window" data-scroll-value="-0.08" data-smooth="0.8">
+                    <figure class="js-active-on-visible u-transition t-fade-in t-translate-up">
+                        <?= $image1_url ? '<a href="' . $image1_url . '" class="u-block has-hover--border u-full-width u-full-height">' : '' ; ?>
+                        <?= $toolboxImageHelper->getWordpressImageHtml($image1, '640x0', $srcset, $sizes, $image1_alt, 'js-image-cover lazyload', true); ?>
+                        <?= $image1_url ? '</a>' : '' ; ?>
+                    </figure>
+                </div>
+            </div>
+        </div>
+    </div>
+<?php endif; ?>

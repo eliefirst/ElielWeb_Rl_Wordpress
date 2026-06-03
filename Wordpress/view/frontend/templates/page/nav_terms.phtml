@@ -1,0 +1,12 @@
+<?php /* @var \Rl\Wordpress\Block\Page\Menu $block */ ?>
+<?php
+$terms = $block->getItems();
+?>
+
+<ul class="list list--horizontal u-marg-t-md">
+    <?php foreach ($terms as $term) : ?>
+    <li>
+        <a href="<?php echo $term->getUrl() ?>" class="link link--primary u-marg-r-xxs u-marg-l-xxs"><?php echo $term->getName() ?></a>
+    </li>
+    <?php endforeach; ?>
+</ul>

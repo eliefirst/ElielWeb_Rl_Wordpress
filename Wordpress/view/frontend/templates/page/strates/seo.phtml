@@ -1,0 +1,38 @@
+<?php /** @var \Rl\Wordpress\Block\Page\Strate $block */ ?>
+<?php
+$strate  = $this->getStrate();
+
+$seo_blocks = !empty($strate['landing_seo']) ? $strate['landing_seo'] : null;
+$i = 0;
+?>
+
+<div class="container-fluid container__seo">
+    <div class="row justify-content-center">
+
+        <?php foreach ($seo_blocks as $seo_block) : ?>
+
+            <?php
+            $title   = !empty($seo_block['landing_footer_seo_title']) ? $seo_block['landing_footer_seo_title'] : null;
+            $uptitle = !empty($seo_block['landing_footer_seo_uptitle']) ? $seo_block['landing_footer_seo_uptitle'] : null;
+            $content = !empty($seo_block['landing_footer_seo_content']) ? $seo_block['landing_footer_seo_content'] : null;
+            ?>
+
+            <?php if (!empty($uptitle) || !empty($title) || !empty($content)) : ?>
+                <div class="push__seo col-lg-4 col-md-6 <?= $i == 0 ? 'u-right u-left--sm' : 'u-left u-right--sm u-marg-t-xl u-marg-t-0--sm' ; ?>">
+                    <div class="u-pad-fluid">
+                        <?php if (!empty($uptitle)) : ?>
+                            <p class="subtitle u-opacity-60"><?php echo $uptitle; ?></p>
+                        <?php endif; ?>
+                        <?php if (!empty($title)) : ?>
+                            <h2><?php echo $title; ?></h2>
+                        <?php endif; ?>
+                        <?php if (!empty($content)) : ?>
+                            <div><?php echo $content; ?></div>
+                        <?php endif; ?>
+                    </div>
+                </div>
+            <?php endif; ?>
+        <?php $i++; endforeach; ?>
+
+    </div>
+</div>

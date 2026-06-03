@@ -1,0 +1,101 @@
+<?php /** @var \Rl\Wordpress\Block\Page\Strate $block */ ?>
+<?php
+$toolboxImageHelper = $this->getToolboxImageHelper();
+$strate             = $this->getStrate();
+
+$image      = !empty($strate['strate_image']) ? $strate['strate_image'] : null;
+$image_url  = !empty($strate['strate_image_link']) ? $strate['strate_image_link'] : null;
+$title      = !empty($strate['strate_title']) ? $strate['strate_title'] : null;
+$uptitle    = !empty($strate['strate_uptitle']) ? $strate['strate_uptitle'] : null;
+$video      = !empty($strate['strate_video']) ? $strate['strate_video'] : null;
+$preview    = !empty($strate['strate_preview']) ? $strate['strate_preview'] : null;
+$uid        = uniqid();
+$srcset     = [
+    '1920x768' => '1920',
+    '1280x800' => '1280',
+    '640x0'    => '640',
+];
+$sizes      = [];
+
+if(!empty($image)){
+    $backgroundAlt   = !empty($image['title']) ? $image['title'] : $title;
+}
+
+?>
+
+<?php if ($title) : ?>
+    <div class="container-fluid u-center u-marg-b-md">
+
+        <?php if ($uptitle): ?>
+            <div class="u-overflow-hidden u-marg-b-xxs">
+                <span class="u-inline-block subtitle u-opacity-60 js-active-on-visible t-fade-in t-translate-down" data-delay="100"><?= $uptitle ?></span>
+            </div>
+        <?php endif; ?>
+
+        <h2 class="u-block u-marg-auto js-active-on-visible t-fade-in t-translate-down" data-delay="250"><?= $title ?></h2>
+
+    </div>
+<?php endif; ?>
+<?php if ($video) : ?>
+    <div class="u-full-width js-video-player js-parallax-parent u-overflow-hidden" data-scroll-value="-.3" data-smooth="1">
+        <div class="media__wrapper u-relative u-overflow-hidden u-transition u-middle u-bg-gradient js-custom-cursor"
+             data-reset="1">
+            <div class="button--play u-absolute u-front js-dot cursor__wrapper" id="icon-video__<?= $uid ?>">
+                <svg class="icon u-white  u-cursor-pointer u-front u-absolute" role="button"
+                     aria-labelledby="title">
+                    <title><?= __('Play') ?></title>
+                    <circle fill="none" class="fill" stroke-width="2" stroke-miterlimit="10" cx="31" cy="31"
+                            r="30"/>
+                    <circle fill="none" class="stroke" stroke="#fff" stroke-width="2" stroke-miterlimit="10" cx="31"
+                            cy="31" r="30"/>
+                </svg>
+                <div class="play-pause u-force3d"></div>
+            </div>
+            <div class="video__preview js-video-play u-absolute u-absolute-center u-front u-full-width u-transition u-transition--long">
+
+                <?php if ($preview) : ?>
+                    <video src="<?= $preview ?>"
+                           class="u-full-width u-transition js-video-cover"
+                           muted="muted"
+                           loop="loop"
+                           autoplay="autoplay"
+                           preload="auto">
+                    </video>
+                <?php endif; ?>
+                <div class="js-parallax-parent-item">
+
+                    <img data-src="<?= $block->escapeUrl($toolboxImageHelper->getResizedWordpressUrl($image, '640x0')); ?>"
+                         data-srcset="<?= $block->escapeUrl($toolboxImageHelper->getResizedWordpressUrl($image, '1920x768')); ?> 1920w,
+    		        				 <?= $block->escapeUrl($toolboxImageHelper->getResizedWordpressUrl($image, '1280x800')); ?> 1280w,
+    		        				 <?= $block->escapeUrl($toolboxImageHelper->getResizedWordpressUrl($image, '640x0')); ?> 640w"
+                         class="u-full-width u-transition lazyload"
+                         alt="<?= !empty($backgroundAlt) ? $backgroundAlt : '' ?>"
+                         id="cover-video__<?= $uid ?>">
+                </div>
+
+            </div>
+            <video src="<?= $video ?>"
+                   preload="none"
+                   class="u-full-width u-relative u-transition u-transition--long js-video" id="video__<?= $uid ?>">
+            </video>
+        </div>
+    </div>
+<?php else : ?>
+    <div class="media__wrapper u-relative u-overflow-hidden u-transition js-parallax-parent" data-scroll-value="-0.66" data-smooth=".75">
+        <div class="js-parallax-parent-item">
+            <?php if(!empty($image_url) && !empty($image_url['url'])) : ?>
+                <a  href="<?= $image_url['url'] ?>" 
+                    class="u-block"
+                    rel="noopener"
+                    <?= !empty($image_url['url']) ? ' target="' . $image_url['target'] . '"' : '' ; ?>
+                    <?= !empty($image_url['title']) ? ' title="' . $image_url['title'] . '"' : '' ; ?>
+                >
+            <?php endif; ?>
+            <?= $toolboxImageHelper->getWordpressImageHtml($image, '1920x768', $srcset, $sizes, 'alt', 'lazyload u-full-width', true); ?>
+            <?php if(!empty($image_url)) : ?>
+                </a>
+            <?php endif; ?>
+        </div>
+    </div>
+<?php endif; ?>
+

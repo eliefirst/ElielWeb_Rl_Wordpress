@@ -1,0 +1,26 @@
+<?php /** @var \Rl\Wordpress\Block\Post\View\Share $block */ ?>
+<?php $socialNetworks = $block->getLinks(); ?>
+<div>
+    <?php if (!empty($socialNetworks)): ?>
+    <ul class="list list--horizontal u-nowrap">
+        <?php foreach ($socialNetworks as $socialNetwork): ?>
+            <?php $shareUrl = $socialNetwork->getShareUrl($block->getPost()->getUrl()); ?>
+            <?php if (!empty($shareUrl)): ?>
+                <?php $socialNetworkCode = strtolower($socialNetwork->getCode()); ?>
+                <?php $uppercaseName = ucfirst($socialNetworkCode); ?>
+                <li>
+                    <a class="share__item <?= $socialNetworkCode; ?> gtm-Share-<?= $uppercaseName; ?>-button"
+                       href="<?= $block->escapeUrl($shareUrl); ?>"
+                       title="<?= __('Share on'); ?> <?= $socialNetwork->getName(); ?>"
+                       rel="noopener noreferrer">
+                        <span class="sr-only"> <?php echo $socialNetworkCode; ?></span>
+                        <svg class="icon icon--md">
+                            <use xlink:href="#icon-<?= $socialNetworkCode; ?>" x="0" y="0"/>
+                        </svg>
+                    </a>
+                </li>
+            <?php endif; ?>
+        <?php endforeach ?>
+    </ul>
+    <?php endif; ?>
+</div>

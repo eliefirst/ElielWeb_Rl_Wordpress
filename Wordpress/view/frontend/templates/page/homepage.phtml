@@ -1,0 +1,28 @@
+<?php $strates = $block->getStrates('home_strates'); ?>
+<?php if ($strates): ?>
+    <?php foreach ($strates as $strate): ?>
+        <?php $template = !empty($strate['acf_fc_layout']) ? $strate['acf_fc_layout'] : '';
+        ?>
+        <?php if ($template): ?>
+            <?php $strateBlock = $block->getChildBlock($template); ?>
+            <?php if ($strateBlock): ?>
+                <?php echo $strateBlock->setStrate($strate)->toHtml(); ?>
+            <?php endif; ?>
+        <?php endif; ?>
+    <?php endforeach; ?>
+<?php else: ?>
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-12 u-center u-marg-t-xxl u-marg-b-xxl">
+                <span class="subtitle">
+                    <?php echo "Aucune page WORDPRESS n'est associée à cette langue dans la configuration MAGENTO (ou bien elle est introuvable)."; ?>
+                </span>
+            </div>
+        </div>
+    </div>
+<?php endif; ?>
+<section class="strate strate__instagram">
+    <?php echo $this->getChildHtml('homepage_instagram'); ?>
+</section>
+<?php echo $this->getChildHtml('footer_about'); ?>
+<?php echo $this->getChildHtml('footer_headline'); ?>

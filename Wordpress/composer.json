@@ -1,0 +1,36 @@
+{
+    "name": "rl/wordpress",
+    "description": "",
+    "require": {
+        "php": "~5.5.0|~5.6.0|~7.0.0",
+        "clrz/wordpress": "0.2.1.2",
+"bentideswell/magento2-wordpress-integration": "null",
+"clrz/magento2-wordpress-integration-acf": "2.0.1.1",
+
+        "magento/magento-composer-installer": "*"
+    },
+    "suggest": {
+
+    },
+    "type": "magento2-module",
+    "version": "0.1.0",
+    "license": [
+
+    ],
+    "autoload": {
+        "files": [
+            "registration.php"
+        ],
+        "psr-4": {
+            "Rl\\Wordpress\\": ""
+        }
+    },
+    "extra": {
+        "map": [
+            [
+                "*",
+                "Rl/Wordpress"
+            ]
+        ]
+    }
+}

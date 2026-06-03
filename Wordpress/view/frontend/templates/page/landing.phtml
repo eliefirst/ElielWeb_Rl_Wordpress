@@ -1,0 +1,30 @@
+<?php
+/**
+ * This file is part of Rl_Wordpress for Magento.
+ *
+ * @license   Tous droits réservés
+ * @author    Renaud Gouffé <renaud@colorz.fr>
+ * @copyright Copyright (c) 2018 Colorz (http://www.colorz.fr)
+ */
+?>
+<?php /* @var \Rl\Wordpress\Block\Page $block */ ?>
+<?php
+$strates       = $block->getStrates('redline_landing');
+?>
+
+<?php if ($strates): ?>
+    <?php foreach ($strates as $strate): ?>
+        <?php $template = !empty($strate['acf_fc_layout']) ? $strate['acf_fc_layout'] : ''; ?>
+        <?php if ($template): ?>
+            <?php $strateBlock = $block->getChildBlock($template); ?>
+            <?php if ($strateBlock): ?>
+                <section class="strate strate--acf strate__<?= $template ?>">
+                    <?php echo $strateBlock->setStrate($strate)->toHtml(); ?>
+                </section>
+            <?php endif; ?>
+        <?php endif; ?>
+    <?php endforeach; ?>
+<?php else: ?>
+    <?php echo "Add strates in wordpress to make a great CMS page !"; ?>
+<?php endif; ?>
+<?php echo $this->getChildHtml('footer_headline'); ?>

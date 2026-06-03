@@ -1,0 +1,32 @@
+<?php /** @var \Rl\Wordpress\Block\Page\Strate $block */ ?>
+<?php
+$strate  = $this->getStrate();
+$title   = !empty($strate['strate_title']) ? $strate['strate_title'] : null;
+$uptitle = !empty($strate['strate_uptitle']) ? $strate['strate_uptitle'] : null;
+$content = !empty($strate['strate_content']) ? $strate['strate_content'] : null;
+
+?>
+
+<div class="container-fluid">
+    <div class="row container-inner u-center justify-content-center">
+        <div class="col-md-8">
+            <?php if (!empty($uptitle)) : ?>
+                <span class="subtitle js-active-on-visible t-fade-in t-translate-down">
+                    <?= $uptitle ?>
+                </span>
+            <?php endif; ?>
+            <?php if (!empty($title)) : ?>
+                <h2 class="h1 u-overflow-hidden">
+                    <span class="u-inline-block js-active-on-visible t-fade-in t-translate-down" data-delay="200">
+                        <?= $title ?>
+                    </span>
+                </h2>
+            <?php endif; ?>
+            <?php if (!empty($content)) : ?>
+                <div class="text js-active-on-visible t-fade-in t-translate-down" data-delay="300">
+                    <?= $content ?>    
+                </div>
+            <?php endif; ?>
+        </div>
+    </div>
+</div>
