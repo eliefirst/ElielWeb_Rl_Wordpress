@@ -1,0 +1,79 @@
+<?php
+/**
+ * ElielWeb_RlWordpress — Push strate
+ * Grid of image cards with title/uptitle overlay.
+ *
+ * @var \ElielWeb\RlWordpress\Block\Page\Strate $block
+ * @var \Magento\Framework\Escaper $escaper
+ */
+declare(strict_types=1);
+
+$strate = $block->getStrate();
+if (!$strate) return;
+
+/** @var array<int, array<string, mixed>> $pushes */
+$pushes = $strate['push_block'] ?? [];
+if (empty($pushes)) return;
+
+$count = count($pushes);
+$colClass = match (true) {
+    $count >= 4 => 'md:w-1/4 w-1/2',
+    $count === 3 => 'md:w-1/3 w-full',
+    $count === 2 => 'md:w-1/2 w-full',
+    default      => 'w-full',
+};
+?>
+
+<div class="w-full px-4 md:px-8 py-8">
+    <div class="flex flex-wrap justify-between gap-y-4 -mx-2">
+        <?php foreach ($pushes as $push):
+            $image   = $push['push_image']   ?? null;
+            $title   = (string)($push['push_title']   ?? '');
+            $upTitle = (string)($push['push_uptitle'] ?? '');
+            $cta     = $push['push_url']     ?? null;
+
+            $imgUrl = $block->getWpImageUrl(is_array($image) ? $image : null);
+            $imgAlt = $block->getWpImageAlt(is_array($image) ? $image : null, $title);
+            $link   = is_array($cta) ? (string)($cta['url'] ?? '') : '';
+            $blank  = is_array($cta) && ($cta['target'] ?? '') === '_blank';
+        ?>
+            <div class="<?= $colClass ?> px-2">
+                <div class="relative overflow-hidden aspect-square group">
+                    <?php if ($link !== ''): ?>
+                        <a href="<?= $block->escapeUrl($link) ?>"
+                           class="block w-full h-full"
+                           <?= $blank ? 'target="_blank" rel="noopener noreferrer"' : '' ?>>
+                    <?php endif; ?>
+
+                    <?php if ($imgUrl !== ''): ?>
+                        <img src="<?= $block->escapeUrl($imgUrl) ?>"
+                             alt="<?= $block->escapeHtmlAttr($imgAlt) ?>"
+                             class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                             loading="lazy">
+                    <?php endif; ?>
+
+                    <?php if ($title !== '' || $upTitle !== ''): ?>
+                        <div class="absolute inset-0 bg-black/30 flex flex-col items-center justify-center
+                                    text-white text-center px-4 transition-opacity duration-300
+                                    group-hover:bg-black/50">
+                            <?php if ($upTitle !== ''): ?>
+                                <span class="text-sm font-medium tracking-wide mb-1">
+                                    <?= $block->escapeHtml($upTitle) ?>
+                                </span>
+                            <?php endif; ?>
+                            <?php if ($title !== ''): ?>
+                                <span class="<?= $count > 3 ? 'text-xl' : 'text-2xl md:text-3xl' ?> font-semibold leading-tight">
+                                    <?= $block->escapeHtml($title) ?>
+                                </span>
+                            <?php endif; ?>
+                        </div>
+                    <?php endif; ?>
+
+                    <?php if ($link !== ''): ?>
+                        </a>
+                    <?php endif; ?>
+                </div>
+            </div>
+        <?php endforeach; ?>
+    </div>
+</div>

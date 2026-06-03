@@ -1,0 +1,115 @@
+<?php
+/**
+ * ElielWeb_RlWordpress — Full-width image or video strate
+ * With optional title/uptitle header above.
+ *
+ * @var \ElielWeb\RlWordpress\Block\Page\Strate $block
+ * @var \Magento\Framework\Escaper $escaper
+ */
+declare(strict_types=1);
+
+$strate  = $block->getStrate();
+if (!$strate) return;
+
+$image   = $strate['strate_image']       ?? null;
+$imgLink = $strate['strate_image_link']  ?? null;
+$title   = (string)($strate['strate_title']   ?? '');
+$uptitle = (string)($strate['strate_uptitle'] ?? '');
+$video   = (string)($strate['strate_video']   ?? '');
+$preview = (string)($strate['strate_preview'] ?? '');
+$uid     = bin2hex(random_bytes(4));
+
+$imageUrl = $block->getWpImageUrl(is_array($image) ? $image : null);
+$imageAlt = $block->getWpImageAlt(is_array($image) ? $image : null, $title);
+
+$linkUrl    = is_array($imgLink) ? (string)($imgLink['url']    ?? '') : '';
+$linkTitle  = is_array($imgLink) ? (string)($imgLink['title']  ?? '') : '';
+$linkTarget = is_array($imgLink) && ($imgLink['target'] ?? '') === '_blank';
+?>
+
+<?php if ($title !== '' || $uptitle !== ''): ?>
+    <div class="w-full px-4 md:px-8 text-center mb-8">
+        <?php if ($uptitle !== ''): ?>
+            <p class="text-xs uppercase tracking-widest text-neutral-500 mb-2">
+                <?= $block->escapeHtml($uptitle) ?>
+            </p>
+        <?php endif; ?>
+        <?php if ($title !== ''): ?>
+            <h2 class="text-3xl md:text-4xl font-semibold">
+                <?= $block->escapeHtml($title) ?>
+            </h2>
+        <?php endif; ?>
+    </div>
+<?php endif; ?>
+
+<?php if ($video !== ''): ?>
+    {{-- Video player with poster image preview --}}
+    <div class="relative w-full overflow-hidden bg-black"
+         x-data="videoPlayer('<?= $block->escapeHtmlAttr($video) ?>')">
+
+        <?php if ($preview !== ''): ?>
+            <video src="<?= $block->escapeUrl($preview) ?>"
+                   class="absolute inset-0 w-full h-full object-cover"
+                   muted loop autoplay playsinline
+                   x-show="!playing">
+            </video>
+        <?php elseif ($imageUrl !== ''): ?>
+            <img src="<?= $block->escapeUrl($imageUrl) ?>"
+                 alt="<?= $block->escapeHtmlAttr($imageAlt) ?>"
+                 class="absolute inset-0 w-full h-full object-cover"
+                 loading="lazy"
+                 x-show="!playing">
+        <?php endif; ?>
+
+        <video id="video-<?= $uid ?>"
+               src="<?= $block->escapeUrl($video) ?>"
+               class="w-full aspect-video object-cover"
+               :class="playing ? 'opacity-100' : 'opacity-0'"
+               preload="none"
+               @ended="playing = false">
+        </video>
+
+        <button type="button"
+                class="absolute inset-0 flex items-center justify-center group"
+                :class="playing ? 'opacity-0 pointer-events-none' : 'opacity-100'"
+                @click="play($el.previousElementSibling)"
+                aria-label="<?= $block->escapeHtmlAttr(__('Play video')) ?>">
+            <span class="w-16 h-16 rounded-full border-2 border-white flex items-center justify-center
+                         transition-transform group-hover:scale-110">
+                <svg class="w-6 h-6 text-white fill-current ml-1" viewBox="0 0 24 24" aria-hidden="true">
+                    <path d="M8 5v14l11-7z"/>
+                </svg>
+            </span>
+        </button>
+
+    </div>
+
+    <script>
+    function videoPlayer(src) {
+        return {
+            playing: false,
+            play(videoEl) {
+                videoEl.src = src;
+                videoEl.play().then(() => { this.playing = true; });
+            }
+        };
+    }
+    </script>
+
+<?php elseif ($imageUrl !== ''): ?>
+    {{-- Static full-width image, with optional link --}}
+    <div class="w-full overflow-hidden">
+        <?php if ($linkUrl !== ''): ?>
+            <a href="<?= $block->escapeUrl($linkUrl) ?>"
+               <?= $linkTarget ? 'target="_blank" rel="noopener noreferrer"' : '' ?>
+               <?= $linkTitle !== '' ? 'title="' . $block->escapeHtmlAttr($linkTitle) . '"' : '' ?>>
+        <?php endif; ?>
+        <img src="<?= $block->escapeUrl($imageUrl) ?>"
+             alt="<?= $block->escapeHtmlAttr($imageAlt) ?>"
+             class="w-full h-auto transition-transform duration-700 hover:scale-[1.02]"
+             loading="lazy">
+        <?php if ($linkUrl !== ''): ?>
+            </a>
+        <?php endif; ?>
+    </div>
+<?php endif; ?>

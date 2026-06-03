@@ -1,0 +1,21 @@
+{
+    "name": "elielweb/module-rl-wordpress",
+    "description": "ElielWeb - FishPig WordPress landing pages integration for RedLine Paris",
+    "type": "magento2-module",
+    "license": "proprietary",
+    "version": "1.0.0",
+    "require": {
+        "php": "^8.4",
+        "magento/framework": "*",
+        "bentideswell/magento2-wordpress-integration": "*",
+        "elielweb/module-fishpig": "*"
+    },
+    "autoload": {
+        "files": [
+            "registration.php"
+        ],
+        "psr-4": {
+            "ElielWeb\\RlWordpress\\": ""
+        }
+    }
+}

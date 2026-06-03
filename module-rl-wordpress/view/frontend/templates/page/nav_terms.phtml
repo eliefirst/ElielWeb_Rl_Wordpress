@@ -1,0 +1,23 @@
+<?php
+/**
+ * ElielWeb_RlWordpress — WordPress category navigation
+ *
+ * @var \ElielWeb\RlWordpress\Block\Page\Menu $block
+ * @var \Magento\Framework\Escaper $escaper
+ */
+declare(strict_types=1);
+
+$terms = $block->getItems();
+if (empty($terms)) return;
+?>
+
+<ul class="flex flex-wrap gap-4 mt-8" role="list">
+    <?php foreach ($terms as $term): ?>
+        <li>
+            <a href="<?= $block->escapeUrl($term->getUrl()) ?>"
+               class="text-sm font-medium hover:text-[#B4121C] transition-colors">
+                <?= $block->escapeHtml($term->getName()) ?>
+            </a>
+        </li>
+    <?php endforeach; ?>
+</ul>
