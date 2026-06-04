@@ -57,21 +57,26 @@ class Page extends Template
      *
      * @return array<int, array<string, mixed>>|null
      */
-    public function getStrates(string $metaValue): ?array
-    {
-        $post = $this->getPost();
-        if (!$post) {
-            return null;
-        }
-
-        $headBlock = $this->getLayout()->getBlock('head');
-        if ($headBlock) {
-            $headBlock->setTitle($post->getPostTitle());
-        }
-
-        $key     = $this->stratesPrefix ? $this->stratesPrefix . '_' . $metaValue : $metaValue;
-        $strates = $post->getMetaValue($key);
-
-        return !empty($strates) && is_array($strates) ? $strates : null;
+public function getStrates(string $metaValue): ?array
+{
+    $post = $this->getPost();
+    if (!$post) {
+        return null;
     }
+
+    $headBlock = $this->getLayout()->getBlock('head');
+    if ($headBlock) {
+        $headBlock->setTitle($post->getPostTitle());
+    }
+
+    $key     = $this->stratesPrefix ? $this->stratesPrefix . '_' . $metaValue : $metaValue;
+    $strates = $post->getMetaValue($key);
+
+    if (is_string($strates)) {
+        $strates = @unserialize($strates);
+    }
+
+    return !empty($strates) && is_array($strates) ? $strates : null;
+}
+
 }
