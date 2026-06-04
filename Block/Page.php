@@ -35,6 +35,9 @@ class Page extends Template
         return $this->registry->registry('wordpress_post');
     }
 
+    /**
+     * Transforms a string into a URL-safe slug (PHP-native, no external dependency).
+     */
     public function slugify(string $string): string
     {
         $string = mb_strtolower(trim($string), 'UTF-8');
@@ -50,6 +53,15 @@ class Page extends Template
         return $this;
     }
 
+    /**
+     * Returns ACF flexible content strates for the current WP post.
+     *
+     * ACF stores flex layouts as a serialized array in wp_postmeta
+     * (meta_key = 'redline_landing', value = a:N:{i:0;s:4:"hero";...}).
+     * Each field of strate N is stored as 'redline_landing_N_fieldname'.
+     *
+     * @return array<int, array<string, mixed>>|null
+     */
     public function getStrates(string $metaValue): ?array
     {
         $post = $this->getPost();
@@ -64,11 +76,13 @@ class Page extends Template
 
         $key = $this->stratesPrefix ? $this->stratesPrefix . '_' . $metaValue : $metaValue;
 
+        // 1. Lire la meta sérialisée contenant la liste ordonnée des layouts
         $rawValue = $post->getMetaValue($key);
         if (empty($rawValue)) {
             return null;
         }
 
+        // 2. Désérialiser → ['hero', 'edito', 'text', ...]
         $layouts = @unserialize($rawValue);
         if (!is_array($layouts) || empty($layouts)) {
             return null;
@@ -81,6 +95,7 @@ class Page extends Template
         foreach ($layouts as $index => $layoutName) {
             $prefix = $key . '_' . $index . '_';
 
+            // 3. Lire tous les champs de la strate N depuis wp_postmeta
             $rows = $connection->fetchAll(
                 $connection->select()
                     ->from('wp_postmeta', ['meta_key', 'meta_value'])
@@ -88,17 +103,20 @@ class Page extends Template
                     ->where('meta_key LIKE ?', $prefix . '%')
             );
 
+            // 4. Reconstruire l'array structuré
             $strate = ['acf_fc_layout' => (string)$layoutName];
 
             foreach ($rows as $row) {
                 $fieldName = substr((string)$row['meta_key'], strlen($prefix));
 
+                // Ignorer les clés vides ou déjà définies (acf_fc_layout)
                 if ($fieldName === '' || $fieldName === 'acf_fc_layout') {
                     continue;
                 }
 
                 $value = $row['meta_value'];
 
+                // Désérialiser les sous-tableaux ACF (ex: champs image → ['url','alt','title',...])
                 if (is_string($value) && str_starts_with($value, 'a:')) {
                     $decoded = @unserialize($value);
                     if (is_array($decoded)) {
@@ -112,6 +130,7 @@ class Page extends Template
             $strates[] = $strate;
         }
 
+        // 5. Retourner l'array complet ou null si vide
         return !empty($strates) ? $strates : null;
     }
 }
